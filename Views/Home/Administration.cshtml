@@ -1,0 +1,71 @@
+﻿@model List<BookHaven.Models.User>
+@{
+    ViewData["Title"] = "User management";
+}
+<div class="row">
+    <form asp-controller="Home" method="get">
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr class="active">
+                    <td colspan="9">
+                        <button type="submit" asp-action="BlockSelected" class="btn btn-lg btn-primary">
+                            <i class="glyphicon glyphicon-remove"></i>
+                            Block
+                        </button>
+                        <button type="submit" asp-action="UnblockSelected" class="btn btn-lg btn-primary">
+                            <i class="glyphicon glyphicon-ok"></i>
+                            Unblock
+                        </button>
+                        <button type="submit" asp-action="MakeSelectedCreators" class="btn btn-lg btn-primary">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                            Make Creator
+                        </button>
+                        <button type="submit" asp-action="MakeSelectedNoncreators" class="btn btn-lg btn-primary">
+                            <i class="glyphicon glyphicon-remove"></i>
+                            Make Non-creator
+                        </button>
+                        <button type="submit" asp-action="DeleteSelected" class="btn btn-lg btn-danger">
+                            <i class="glyphicon glyphicon-trash"></i>
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <th>@Html.CheckBox("CheckAll", false, new { id = "select_all" })</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Registration date</th>
+                    <th>Last login date</th>
+                    <th>Blocked</th>
+                    <th>Creator</th>
+                    <th>Admin</th>
+                    <th>Books</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="selectable" asp-for="@Model[i].IsSelected" />
+                            <input type="hidden" asp-for="@Model[i].Id" />
+                            <input type="hidden" asp-for="@Model[i].UserName" />
+                        </td>
+                        <td class="col-md-2">@Model[i].UserName</td>
+                        <td class="col-md-3">@Model[i].Email</td>
+                        <td class="col-md-1">@Model[i].RegistrationDate</td>
+                        <td class="col-md-1">@Model[i].LastLoginDate</td>
+                        <td class="col-md-1">@(Model[i].IsBlocked ? "Yes" : "No")</td>
+                        <td class="col-md-1">@(Model[i].IsCreator ? "Yes" : "No")</td>
+                        <td class="col-md-1">@(Model[i].IsAdmin ? "Yes" : "No")</td>
+                        <td class="col-md-1">
+                            <a asp-action="TheAuthorBooks" class="btn btn-sm btn-primary" asp-route-id="@Model[i].Id">
+                                <i class="glyphicon glyphicon-book"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+</div>

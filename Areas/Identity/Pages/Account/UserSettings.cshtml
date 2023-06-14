@@ -1,0 +1,41 @@
+﻿@page
+@model UserSettingsModel
+@{
+    ViewData["Title"] = "Personal Settings";
+}
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+        <h2>@ViewData["Title"]</h2>
+        <form method="post">
+            @if (Model.Input.IsValidating)
+            {
+            <div asp-validation-summary="All" class="text-danger"></div>
+            }
+            <div class="form-group">
+                <label asp-for="Input.UserName"></label>
+                <input asp-for="Input.UserName" class="form-control" />
+                <span asp-validation-for="Input.UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.OldPassword"></label>
+                <input asp-for="Input.OldPassword" class="form-control" />
+                <span asp-validation-for="Input.OldPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.NewPassword"></label>
+                <input asp-for="Input.NewPassword" class="form-control" />
+                <span asp-validation-for="Input.NewPassword" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-outline-secondary">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

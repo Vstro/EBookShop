@@ -1,0 +1,62 @@
+﻿@model ReadingChapterViewModel
+@using Microsoft.AspNetCore.Identity
+@{
+    ViewData["Title"] = "Reading " + Model.CurrentChapter.Title;
+    @inject SignInManager<User> SignInManager
+    @inject UserManager<User> UserManager
+}
+<div class="row">
+    <h2 style="text-align:center;">@Model.CurrentChapter.Title</h2>
+    <div style="white-space:pre-wrap; text-align:justify;">@Model.CurrentChapter.Text</div>
+    <form asp-controller="Home" method="get">
+        <div style="text-align:center;" class="col-md-12">
+            @if (!Model.PrevChapterId.Equals(Guid.Empty))
+            {
+                <a asp-action="ReadingChapter" asp-route-id="@Model.PrevChapterId" class="btn btn-lg btn-primary">
+                    <i class="glyphicon glyphicon-arrow-left"></i>
+                    Previous
+                </a>
+            }
+            else
+            {
+                <button disabled="disabled" type="submit" class="btn btn-lg btn-primary">
+                    <i class="glyphicon glyphicon-arrow-left"></i>
+                    Previous
+                </button>
+            }
+            @if (SignInManager.IsSignedIn(User))
+            {
+                bool liked = false;
+                foreach (String id in Model.LikedUsersIds)
+                {
+                    if (UserManager.GetUserId(User).Equals(id))
+                    {
+                        liked = true;
+                    }
+                }
+                if (!liked)
+                {
+                    <a asp-action="Like" asp-route-chapterid="@Model.CurrentChapter.Id"
+                            asp-route-userid="@UserManager.GetUserId(User)" class="btn btn-lg btn-primary">
+                        <i class="glyphicon glyphicon-heart"></i>
+                        Like
+                    </a>
+                }
+            }
+            @if (!Model.NextChapterId.Equals(Guid.Empty))
+            {
+                <a class="btn btn-lg btn-primary" asp-action="ReadingChapter" asp-route-id="@Model.NextChapterId">
+                    <i class="glyphicon glyphicon-arrow-right"></i>
+                    Next
+                </a>
+            }
+            else
+            {
+                <button disabled="disabled" type="submit" class="btn btn-lg btn-primary">
+                    <i class="glyphicon glyphicon-arrow-right"></i>
+                    Next
+                </button>
+            }
+        </div>
+    </form>
+</div>

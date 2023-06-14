@@ -1,0 +1,159 @@
+﻿@model BookHaven.Models.IndexViewModel
+@using System.Globalization;
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = "Home";
+}
+<div class="row">
+    <form asp-controller="Home" method="get">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <td colspan="6">
+                        <h2>Last updated books</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Author</th>
+                    <th>Price</th>
+                    <th>Last update date</th>
+                    <th>Read</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.LastUpdatedBooks.Count; i++)
+                {
+                    <tr>
+                        <td class="col-md-3">
+                            <a asp-action="ReadingBook" asp-route-id="@Model.LastUpdatedBooks[i].Id">
+                                @Model.LastUpdatedBooks[i].Title
+                            </a>
+                        </td>
+                        <td class="col-md-2">@Model.LastUpdatedBooks[i].Genre</td>
+                        <td class="col-md-2">@Model.LastUpdatedBooks[i].Author</td>
+                        <td class="col-md-1">@Model.LastUpdatedBooks[i].Cost.ToString("C", CultureInfo.GetCultureInfo("en-US"))</td>
+                        <td class="col-md-3">@Model.LastUpdatedBooks[i].LastUpdate</td>
+                        <td class="col-md-1">
+                            <a asp-action="ReadingBook" class="btn btn-sm btn-primary" asp-route-id="@Model.LastUpdatedBooks[i].Id">
+                                <i class="glyphicon glyphicon-book"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+    @if (SignInManager.IsSignedIn(User) && ((Model.RecommendedBooks?.Count ?? 0) > 0))
+    {
+        <form asp-controller="Home" method="get">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td colspan="6">
+                            <h2>Recommended books</h2>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Title</th>
+                        <th>Genre</th>
+                        <th>Author</th>
+                        <th>Price</th>
+                        <th>Last update date</th>
+                        <th>Read</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = Model.RecommendedBooks.Count - 1; i >= 0; i--)
+                    {
+                        <tr>
+                            <td class="col-md-3">
+                                <a asp-action="ReadingBook" asp-route-id="@Model.RecommendedBooks[i].Id">
+                                    @Model.RecommendedBooks[i].Title
+                                </a>
+                            </td>
+                            <td class="col-md-2">@Model.RecommendedBooks[i].Genre</td>
+                            <td class="col-md-2">@Model.RecommendedBooks[i].Author</td>
+                            <td class="col-md-1">@Model.RecommendedBooks[i].Cost.ToString("C", CultureInfo.GetCultureInfo("en-US"))</td>
+                            <td class="col-md-3">@Model.RecommendedBooks[i].LastUpdate</td>
+                            <td class="col-md-1">
+                                <a asp-action="ReadingBook" class="btn btn-sm btn-primary" asp-route-id="@Model.RecommendedBooks[i].Id">
+                                    <i class="glyphicon glyphicon-book"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+    }
+    <div class="container">
+        <div class="row">
+            <h2>Find any book:</h2>
+            <hr />
+            <form asp-controller="Home" method="post">
+                <div class="input-group">
+                    <input id="search" name="searchQuery" type="text" placeholder="Type in words from the book title, genre, author or tags" value="@Model.SearchQuery" class="form-control">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Search</button>
+                    </span>
+                </div>
+            </form>
+            @if (Model.FoundBooks != null)
+            {
+                @if (Model.FoundBooks.Count == 0)
+                {
+                    <h4 style="color:red; margin:10px">There are no such books so far...</h4>
+                }
+                else
+                {
+                    <form asp-controller="Home" method="get">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Genre</th>
+                                    <th>Author</th>
+                                    <th>Price</th>
+                                    <th>Last update date</th>
+                                    <th>Read</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.FoundBooks.Count; i++)
+                                {
+                                    <tr>
+                                        <td class="col-md-3">
+                                            <a asp-action="ReadingBook" asp-route-id="@Model.FoundBooks[i].Id">
+                                                @Model.FoundBooks[i].Title
+                                            </a>
+                                        </td>
+                                        <td class="col-md-2">@Model.FoundBooks[i].Genre</td>
+                                        <td class="col-md-2">@Model.FoundBooks[i].Author</td>
+                                        <td class="col-md-1">@Model.FoundBooks[i].Cost.ToString("C", CultureInfo.GetCultureInfo("en-US"))</td>
+                                        <td class="col-md-3">@Model.FoundBooks[i].LastUpdate</td>
+                                        <td class="col-md-1">
+                                            <a asp-action="ReadingBook" class="btn btn-sm btn-primary" asp-route-id="@Model.FoundBooks[i].Id">
+                                                <i class="glyphicon glyphicon-book"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </form>
+                }
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        if (@((bool)ViewData["scroll"] ?  "true" : "false")) {
+            window.location = "#search";
+            document.querySelector("#search").focus();
+        }
+    });
+</script>

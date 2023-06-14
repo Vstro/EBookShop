@@ -1,0 +1,105 @@
+﻿@page
+@model EditModel
+@using BookHaven.Models;
+@{
+    ViewData["Title"] = "Edit Book";
+}
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <h2>@ViewData["Title"]</h2>
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.Title"></label>
+                <input asp-for="Input.Title" class="form-control" />
+                <span asp-validation-for="Input.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Author"></label>
+                <input asp-for="Input.Author" class="form-control" />
+                <span asp-validation-for="Input.Author" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Summary"></label>
+                <textarea asp-for="Input.Summary" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Input.Summary" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Genre"></label>
+                <select asp-for="Input.Genre" class="form-control">
+                    @foreach (String genre in Enum.GetNames(typeof(Genre)))
+                    {
+                        <option>@genre</option>
+                    }
+                </select>
+                <span asp-validation-for="Input.Genre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Price"></label>
+                <input asp-for="Input.Price" class="form-control" />
+                <span asp-validation-for="Input.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.File"></label>
+                @if (Model.Input.File != null)
+                {
+                    <i style="color: green; margin: 20px">You have uploaded file!</i>
+                }
+                else
+                {
+                    <i style="color: red; margin: 20px">You still haven't uploaded file!</i>
+                }
+                <input asp-for="Input.File" class="form-control" type="file" />
+                <span asp-validation-for="Input.File" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Tags"></label>
+                <input asp-for="Input.Tags" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-default">Save</button>
+        </form>
+        <form asp-controller="Home" method="get">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Title</th>
+                        <th>Likes</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Chapters.Count; i++)
+                    {
+                    <tr>
+                        <td class="col-md-2">@Model.Chapters[i].Number</td>
+                        <td class="col-md-7">
+                            <a asp-action="ReadingChapter" asp-route-id="@Model.Chapters[i].Id">
+                                @Model.Chapters[i].Title
+                            </a>
+                        </td>
+                        <td>@Model.Chapters[i].LikesAmount</td>
+                        <td class="col-md-2">
+                            <a asp-area="Work" asp-page="/Chapters/Edit" asp-route-id="@Model.Chapters[i].Id">
+                                <i class="glyphicon glyphicon-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    }
+                    <tr>
+                        <td colspan="4">
+                            <a class="btn btn-lg btn-primary" asp-area="Work" asp-page="/Chapters/Create" asp-route-id="@Model.Book.Id">
+                                <i class="glyphicon glyphicon-book"></i>
+                                Add new chapter
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

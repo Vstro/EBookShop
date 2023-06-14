@@ -1,0 +1,56 @@
+﻿@model TheAuthorBooksViewModel
+@using System.Globalization;
+@{
+    ViewData["Title"] = "Books of " + Model.AuthorName;
+}
+<div class="row">
+    <form asp-controller="Home" method="get">
+        <table class="table table-hover">
+            <thead>
+                <tr class="active">
+                    <td colspan="7">
+                        <a class="btn btn-lg btn-primary" asp-area="Work" asp-page="/Books/Create" asp-route-id="@Model.AuthorId">
+                            <i class="glyphicon glyphicon-book"></i>
+                            Add new book
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Price</th>
+                    <th>Last update date</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Books.Count; i++)
+                {
+                <tr>
+                    <td class="col-md-3">
+                        <a asp-action="ReadingBook" asp-route-id="@Model.Books[i].Id">
+                            @Model.Books[i].Title
+                        </a>
+                    </td>
+                    <td class="col-md-2">@Model.Books[i].Author</td>
+                    <td class="col-md-2">@Model.Books[i].Genre</td>
+                    <td class="col-md-1">@Model.Books[i].Cost.ToString("C", CultureInfo.GetCultureInfo("en-US"))</td>
+                    <td class="col-md-2">@Model.Books[i].LastUpdate</td>
+                    <td class="col-md-1">
+                        <a asp-area="Work" asp-page="/Books/Edit" asp-route-id="@Model.Books[i].Id">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                        </a>
+                    </td>
+                    <td class="col-md-1">
+                        <a asp-action="DeleteBook" asp-route-id="@Model.Books[i].Id" asp-route-userid="@Model.AuthorId">
+                            <i class="glyphicon glyphicon-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+</div>

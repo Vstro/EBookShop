@@ -1,0 +1,188 @@
+﻿@model BookHaven.Models.ReadingBookViewModel
+@using Microsoft.AspNetCore.Identity
+@using System.Globalization;
+@inject SignInManager<User> SignInManager
+@{
+    ViewData["Title"] = Model.Book.Title;
+}
+<div class="page-header">
+    <h1 style="display: inline-block">@Model.Book.Title</h1>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        if (Model.Book.Cost == 0)
+        {
+            <a class="btn btn-sm btn-success active" id="header_btn">
+                FREE
+            </a>
+        }
+        else if (Model.IsPurchased)
+        {
+            <a asp-action="ResendBook" class="btn btn-sm btn-primary" asp-route-id="@Model.Book.Id" id="header_btn">
+                <i class="glyphicon glyphicon-repeat"></i>
+                Resend book to the email
+            </a>
+        }
+        else if (!Model.IsInCart)
+        {
+            <a asp-action="AddToCart" class="btn btn-sm btn-primary" asp-route-id="@Model.Book.Id" id="header_btn">
+                <i class="glyphicon glyphicon-ok"></i>
+                Add to Cart
+            </a>
+        }
+        else
+        {
+            <a class="btn btn-sm btn-primary active" id="header_btn">
+                <i class="glyphicon glyphicon-ok"></i>
+                Already in Cart
+            </a>
+        }
+    }
+</div>
+<div class="row">
+    <div class="container">
+        <h2>Author: <text style="color:lightskyblue">@Model.Book.Author</text></h2>
+    </div>
+    <div class="container">
+        <h2>Rating: <text style="color:lightskyblue">@Model.Rating.ToString("n2")</text></h2>
+    </div>
+    <div class="container">
+        <h2>Price: <text style="color:lightskyblue">@Model.Book.Cost.ToString("C", CultureInfo.GetCultureInfo("en-US"))</text></h2>
+    </div>
+    <div class="container">
+        <h2>Summary</h2>
+        <text style="font-size:18px">@Model.Book.Summary</text>
+    </div>
+    <div class="container">
+        <h2>Tags</h2>
+        <form asp-controller="Home" method="post">
+            @foreach (BookTag ftag in Model.Book.BookTags)
+            {
+                <button type="submit" class="btn btn-info" asp-action="Index" asp-route-searchQuery="@ftag.Tag.Value">@ftag.Tag.Value </button>
+            }
+        </form>
+    </div>
+    <div class="container">
+        <h2>Chapters</h2>
+        <form asp-controller="Home" method="get">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Title</th>
+                        <th>Likes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Book.Chapters.Count; i++)
+                    {
+                        <tr>
+                            <td class="col-md-2">@Model.Book.Chapters[i].Number</td>
+                            <td class="col-md-8">
+                                <a asp-action="ReadingChapter" asp-route-id="@Model.Book.Chapters[i].Id">
+                                    @Model.Book.Chapters[i].Title
+                                </a>
+                            </td>
+                            <td class="col-md-2">@Model.Book.Chapters[i].LikesAmount</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <form asp-controller="Home" method="get">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <td colspan="6">
+                        <h2>Similar books</h2>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Title</th>
+                    <th>Genre</th>
+                    <th>Author</th>
+                    <th>Price</th>
+                    <th>Last update date</th>
+                    <th>Read</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.SimilarBooks.Count; i++)
+                {
+                    <tr>
+                        <td class="col-md-3">
+                            <a asp-action="ReadingBook" asp-route-id="@Model.SimilarBooks[i].Id">
+                                @Model.SimilarBooks[i].Title
+                            </a>
+                        </td>
+                        <td class="col-md-2">@Model.SimilarBooks[i].Genre</td>
+                        <td class="col-md-2">@Model.SimilarBooks[i].Author</td>
+                        <td class="col-md-1">@Model.SimilarBooks[i].Cost.ToString("C", CultureInfo.GetCultureInfo("en-US"))</td>
+                        <td class="col-md-3">@Model.SimilarBooks[i].LastUpdate</td>
+                        <td class="col-md-1">
+                            <a asp-action="ReadingBook" class="btn btn-sm btn-primary" asp-route-id="@Model.SimilarBooks[i].Id">
+                                <i class="glyphicon glyphicon-book"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+    <div id="reviews" class="container">
+        <h2>Reviews</h2>
+        @if (Model.Reviews != null)
+        {
+            @if (Model.Reviews.Count == 0)
+            {
+                <h4><i>No reviews yet... Be first!</i></h4>
+            }
+            else
+            {
+                @for (int i = 0; i < Model.Reviews.Count; i++)
+                {
+                    <div id="review_@i">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <div class="panel-title" style="display:flex; justify-content:space-between">
+                                    <div>@Model.Reviews[i].UserName</div>
+                                    <div>Rating: @Model.Reviews[i].Rate</div>
+                                </div>
+                            </div>
+                            <div class="panel-body" style="overflow-wrap:break-word; white-space:pre-line">
+                                @Model.Reviews[i].Text
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+        @if (SignInManager.IsSignedIn(User) && !Model.IsReviewed)
+        {
+            <form asp-controller="Home" asp-action="AddReview" method="post">
+                <input hidden="hidden" name="bookId" value="@Model.Book.Id" />
+                <div class="pull-left"><h4>Your Review:</h4></div>
+                <div class="pull-right" style="display:flex; align-items:center">
+                    <span style="margin-right:10px">
+                        <h4>Rating:</h4>
+                    </span>
+                    <select name="rate" class="form-control">
+                        @for (int i = 0; i <= 10; i++)
+                        {
+                            <option>@i</option>
+                        }
+                    </select>
+                </div>
+                <textarea name="reviewText" type="text" placeholder="Here you can write a review and share your opinion on this book" class="form-control well bg-info" rows="5" style="resize:none; margin-bottom:5px"></textarea>
+                <button class="btn btn-success pull-right" type="submit">Send</button>
+            </form>
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        if (@((bool)ViewData["scroll"] ?  "true" : "false")) {
+            window.location = "#review_@(Model.Reviews.Count - 1)";
+        }
+    });
+</script>
