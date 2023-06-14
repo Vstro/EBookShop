@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>aspnet-Authentication-124B78AE-5E17-49EE-8D34-9AEDC4E2AFD6</UserSecretsId>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <PackageId>BookHaven</PackageId>
+    <Authors>BookHaven</Authors>
+    <Company>BookHaven</Company>
+    <Product>BookHaven</Product>
+    <AssemblyName>BookHaven</AssemblyName>
+    <RootNamespace>BookHaven</RootNamespace>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20201008191220_MyMigration1.cs" />
+    <Compile Remove="Data\Migrations\20201008191220_MyMigration1.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201010162655_MigrationWithSelectibleUser.cs" />
+    <Compile Remove="Data\Migrations\20201010162655_MigrationWithSelectibleUser.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201108181008_MF1.04.cs" />
+    <Compile Remove="Data\Migrations\20201108181008_MF1.04.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201121142525_MF2.0.cs" />
+    <Compile Remove="Data\Migrations\20201121142525_MF2.0.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210601104812_ELibraryBaseStructure.cs" />
+    <Compile Remove="Data\Migrations\20210601104812_ELibraryBaseStructure.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220509092057_CleanUp.cs" />
+    <Compile Remove="Data\Migrations\20220509092057_CleanUp.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220509092935_CleanUp.cs" />
+    <Compile Remove="Data\Migrations\20220509092935_CleanUp.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220509145552_CleanUp3.cs" />
+    <Compile Remove="Data\Migrations\20220509145552_CleanUp3.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Braintree" Version="5.12.0" />
+    <PackageReference Include="MailKit" Version="2.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
+    <PackageReference Include="Neo4jClient" Version="5.1.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Work\Pages\_ValidationScriptsPartial.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Work\Pages\_ViewStart.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+  </ItemGroup>
+
+</Project>
